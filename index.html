@@ -16,7 +16,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* الكارت */
@@ -28,6 +30,8 @@ body {
     padding: 15px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     text-align: center;
+    max-height: 95vh;
+    overflow: hidden;
 }
 
 /* العنوان */
@@ -85,6 +89,7 @@ input {
 /* الكانفس */
 .canvas-wrapper {
     width: 100%;
+    max-width: 500px;
     aspect-ratio: 1/1;
     margin-top: 10px;
 }
@@ -131,13 +136,13 @@ canvas.width = WIDTH;
 canvas.height = HEIGHT;
 
 const img = new Image();
-img.src = "eid.jpg"; // حط صورتك هنا
+img.src = "eid.jpg"; // ضع صورتك هنا
 
 img.onload = function() {
     drawBaseImage();
 };
 
-/* رسم بدون تشويه */
+/* رسم الصورة بدون تشويه */
 function drawBaseImage() {
     const imgRatio = img.width / img.height;
     const canvasRatio = WIDTH / HEIGHT;
@@ -159,7 +164,7 @@ function drawBaseImage() {
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 }
 
-/* كتابة الاسم */
+/* كتابة الاسم والتهنئة في المنتصف */
 function generateImage() {
     const name = document.getElementById("name").value;
 
@@ -167,16 +172,17 @@ function generateImage() {
     drawBaseImage();
 
     ctx.fillStyle = "#1f3c88";
-    ctx.textAlign = "right";
+    ctx.textAlign = "center"; // المنتصف أفقيًا
+    ctx.textBaseline = "middle"; // المنتصف رأسيًا
 
-    ctx.font = "bold 48px Cairo";
-    ctx.fillText(name, 845, 520);
+    ctx.font = "bold 38px Cairo";
+    ctx.fillText(name, WIDTH / 2, 650);
 
     ctx.font = "bold 32px Cairo";
-    ctx.fillText(" /أخوكم", 900, 520);
+    ctx.fillText("أخوكم", WIDTH / 2, 600);
 }
 
-/* تحميل */
+/* تحميل الصورة */
 function downloadImage() {
     const link = document.createElement("a");
     link.download = "eid.png";
@@ -187,7 +193,6 @@ function downloadImage() {
 /* مشاركة واتساب بالصورة */
 async function shareImage() {
     canvas.toBlob(async function(blob) {
-
         const file = new File([blob], "eid.png", { type: "image/png" });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
